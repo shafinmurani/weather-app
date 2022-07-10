@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
 import React, { useState } from "react";
+import Button from "@mui/material/Button";
 import Footer from "./footer";
 const api = {
   key: "REDACTED",
@@ -7,20 +7,20 @@ const api = {
 };
 
 function App() {
-  const [query, setQuery] = useState("");
+  const [searchVal, setsearchVal] = useState("");
   const [weather, setWeather] = useState({});
 
   const search = (evt) => {
-    fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+    fetch(`${api.base}weather?q=${searchVal}&units=metric&APPID=${api.key}`)
       .then((res) => res.json())
       .then((result) => {
         setWeather(result);
-        setQuery("");
+        setsearchVal("");
         console.log(result);
       });
   };
 
-  const dateBuilder = (d) => {
+  const dateConstructor = (d) => {
     let months = [
       "January",
       "February",
@@ -69,17 +69,15 @@ function App() {
             type="text"
             className="search-bar"
             placeholder="Search..."
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
+            onChange={(e) => setsearchVal(e.target.value)}
+            value={searchVal}
           />
           <Button
             variant="contained"
             size="large"
-            style={{ marginTop: "1rem", marginInline: "auto", display: "flex" }}
+            style={{ marginInline: "auto", display: "flex", marginTop: "1rem" }}
             color="info"
-            onClick={() => {
-              search();
-            }}
+            onClick={search}
           >
             Search
           </Button>
@@ -90,14 +88,16 @@ function App() {
               <div className="location">
                 {weather.name}, {weather.sys.country}
               </div>
-              <div className="date">{dateBuilder(new Date())}</div>
+              <div className="date">{dateConstructor(new Date())}</div>
             </div>
             <div className="weather-box">
               <div className="temp">{Math.round(weather.main.temp)}°C</div>
               <div className="location-box">
-                <div className="location">
-                  {" "}
-                  Feels Like : {weather.main.feels_like}°C
+                <div
+                  className="location"
+                  style={{ fontSize: "1.3rem", marginBottom: "1rem" }}
+                >
+                  Feels Like : {Math.round(weather.main.feels_like)}°C
                 </div>
               </div>
               <div className="weather">{weather.weather[0].main}</div>
@@ -111,4 +111,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
